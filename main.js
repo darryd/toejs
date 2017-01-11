@@ -3,6 +3,8 @@
 
 var toe = (function(){
 
+    var wins = [0700, 070, 07, 0444, 0222, 0111, 0421, 0124];
+
     function Board() {
 
         this.x = 0;
@@ -25,6 +27,7 @@ var toe = (function(){
                     process.stdout.write('\n');
 
             }
+            process.stdout.write('\n');
         };
 
         this.play_position = function (position, side) {
@@ -35,6 +38,20 @@ var toe = (function(){
             if (side == 'o')
                 this.o |= position;
         };
+
+
+        this.is_full = function() {
+            return this.board == 0777;
+        };
+
+        this.check_win = function() {
+
+           // TODO add code 
+
+
+        }
+
+
     }
 
     return {
