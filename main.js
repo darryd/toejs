@@ -3,9 +3,10 @@
 
 var toe = (function(){
 
-    var wins = [0700, 070, 07, 0444, 0222, 0111, 0421, 0124];
 
     function Board() {
+
+        var wins = [0700, 070, 07, 0444, 0222, 0111, 0421, 0124];
 
         this.x = 0;
         this.o = 0;
@@ -18,7 +19,7 @@ var toe = (function(){
 
                 if ((this.x & position) == position)
                     process.stdout.write("x ");
-                else if ((this.o & process) == position)
+                else if ((this.o & position) == position)
                     process.stdout.write("o ");
                 else
                     process.stdout.write("- ");
@@ -46,11 +47,16 @@ var toe = (function(){
 
         this.check_win = function() {
 
-           // TODO add code 
+            for (var i = 0; i < wins.length; i++) {
+                if ((this.x & wins[i]) == wins[i])
+                    return 'x';
 
+                if ((this.o & wins[i]) == wins[i])
+                    return 'o';
+            }
 
-        }
-
+            return 'no win';
+        };
 
     }
 
@@ -72,3 +78,7 @@ game = new toe.Game();
 game.board.print();
 game.board.play_position(0400, 'x');
 game.board.print();
+
+console.log(game);
+
+console.log(game.board.check_win());
