@@ -5,34 +5,29 @@ var toe = (function(){
 
     function Dumb_ai(board) {
 
+            this.board = board,
 
-        return {
-            board : board,
-
-            play : function () {
+            this.play = function () {
 
                 var positions = this.board.get_vacant_positions();
                 var i = Math.floor(Math.random() * positions.length);
 
                 return positions[i];
-            }
-        }
+            };
     }
 
     function Board() {
 
         var wins = [0700, 070, 07, 0444, 0222, 0111, 0421, 0124];
 
-        return { 
+        this.x = 0;
+        this.o = 0;
 
-            x : 0,
-            o : 0,
-
-            is_vacant : function(position) {
+        this.is_vacant = function(position) {
                 return (((this.x | this.o) & position) == 0)
-            },
+        };
 
-            get_vacant_positions : function () {
+        this.get_vacant_positions = function () {
 
                 var positions = [];
 
@@ -42,9 +37,9 @@ var toe = (function(){
                 }
 
                 return positions;
-            },
+        };
 
-            print : function() {
+        this.print = function() {
 
                 var count = 0;
 
@@ -62,23 +57,23 @@ var toe = (function(){
 
                 }
                 process.stdout.write('\n');
-            },
+            };
 
-            play_position : function (position, side) {
+           this.play_position = function (position, side) {
 
                 if (side == 'x')
                     this.x |= position;
 
                 if (side == 'o')
                     this.o |= position;
-            },
+            };
 
 
-            is_full : function() {
+            this.is_full = function() {
                 return this.board == 0777;
-            },
+            };
 
-            check_win : function() {
+            this.check_win = function() {
 
                 for (var i = 0; i < wins.length; i++) {
                     if ((this.x & wins[i]) == wins[i])
@@ -89,9 +84,7 @@ var toe = (function(){
                 }
 
                 return 'no win';
-            }
-        };
-
+            };
     }
 
     return {
@@ -103,7 +96,7 @@ var toe = (function(){
                   this.x_player = x_player;
                   this.o_player = o_player;
                   this.turn = who_goes_first;
-              }
+          },
     };
 })();
 
