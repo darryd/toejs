@@ -16,12 +16,48 @@ var toe = (function(){
             };
     }
 
+    function Smart_ai(board) {
+
+        function Result(num_moves, ways) {
+
+            this.num_moves = num_moves;
+            this.ways = ways;
+
+        }
+
+        function count_moves_to_win(position, result) {
+
+            
+            
+
+
+        }
+
+        this.board = board;
+
+        this.play = function() {
+            var positions = this.board.get_vacant_positions();
+
+            count_moves_to_win();
+        }
+    }
+
     function Board() {
 
         var wins = [0700, 070, 07, 0444, 0222, 0111, 0421, 0124];
 
         this.x = 0;
         this.o = 0;
+
+
+        this.copy = function() {
+
+            var new_board = new Board();
+            new_board.x = this.x;
+            new_board.o = this.o;
+
+            return new_board;
+        }
 
         this.is_vacant = function(position) {
                 return (((this.x | this.o) & position) == 0)
@@ -107,6 +143,10 @@ game.board.print();
 game.board.play_position(0400, 'x');
 game.board.print();
 
+var cpy_board = game.board.copy();
+console.log("copy of board:");
+cpy_board.print();
+
 
 
 
@@ -122,3 +162,5 @@ var p = game.dumb_ai.play();
 game.board.play_position(p, 'o');
 game.board.print();
 
+console.log("copy of board:");
+cpy_board.print();
