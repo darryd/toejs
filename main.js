@@ -23,22 +23,85 @@ var toe = (function(){
             this.num_moves = num_moves;
             this.ways = ways;
 
+            this.copy = function() {
+
+                var new_result = new Result(this.num_moves, this.ways);
+                return new_result;
+            };
+
+            this.set = function(result) {
+                this.num_moves = result.num_moves;
+                this.ways = result.num_moves;
+            };
         }
 
-        function count_moves_to_win(position, result) {
+        
 
-            
-            
+        function count_moves_to_win(board, side, result) {
+
+            function get_best_result(results) {
+
+                var min_num_moves = Infinity;
+                var ways = 0;
 
 
+                for (var i = 0; i < results.length; i++) {
+
+                    if (results[i].num_moves < min_num_moves) {
+                        min_num_moves = results[i].num_moves;
+                        ways = 1;
+                    }
+                    else if (min_num_moves == results[i].num_moves){
+                        ways++;
+                    }
+
+                }
+
+                return new Result(min_num_moves, ways);
+            }
+
+
+            board.print();
+
+            if (board.is_full()) {
+                result.num_moves = Infinity;
+                return;
+            }
+                
+
+            if (board.check_win() == side) {
+                return;
+            }
+
+            var positions = board.get_vacant_positions();
+            var results = [];
+
+            for (var i = 0; i < positions.length; i++) {
+                var new_board = board.copy();
+                new_board.play_position(positions[i], side);
+
+
+                var r = result.copy();
+                r.num_moves++;
+
+                count_moves_to_win(new_board, side, r);
+                results[i] = r.copy();
+            }
+
+            r = get_best_result(results);
+            result.set(r);
         }
 
         this.board = board;
 
-        this.play = function() {
+        this.play = function(side) {
             var positions = this.board.get_vacant_positions();
 
-            count_moves_to_win();
+            var result = new Result(0, 0);
+            count_moves_to_win(this.board, side, result);
+            
+            console.log("num_moves: " + result.num_moves);
+            console.log("ways: " + result.ways);
         }
     }
 
@@ -129,6 +192,7 @@ var toe = (function(){
 
                   this.board = new Board;
                   this.dumb_ai = new Dumb_ai(this.board);
+                  this.smart_ai = new Smart_ai(this.board);
                   this.x_player = x_player;
                   this.o_player = o_player;
                   this.turn = who_goes_first;
@@ -164,3 +228,5 @@ game.board.print();
 
 console.log("copy of board:");
 cpy_board.print();
+
+game.smart_ai.play('x');
