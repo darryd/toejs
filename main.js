@@ -160,6 +160,28 @@ var toe = (function(){
             }
             return candidate.choose_candidate().position;
         }
+
+        this.evaluate_move = function(move, side) {
+
+          var result = new Result(0, 0);
+          var new_board = this.board.copy();
+
+          new_board.play_position(move, side);
+          count_moves_to_win(new_board, side, result);
+          
+
+          new_board.print();
+          console.log(result);
+        }
+
+        this.evalate_all_moves = function(side) {
+
+            var positions = this.board.get_vacant_positions();
+
+            for (var i=0; i<positions.length; i++)
+                this.evaluate_move(positions[i], side);
+
+        }
     }
 
     function Board() {
