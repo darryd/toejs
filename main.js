@@ -1,7 +1,37 @@
 
-
-
 var toe = (function(){
+
+    function Candidate(compare_f) {
+
+        this.candidates = [];
+        this.compare = compare_f
+        this.add_candidate = function(candidate) {
+
+            if (this.candidates.length == 0) {
+                this.candidates.push(candidate);
+                return;
+            }
+
+            switch (this.compare(candidate, this.candidates[0])) {
+
+                case "worse":
+                    break;
+
+                case "better":
+                    this.candidates = [];
+
+                case "equal":
+                    this.candidates.push(candidate);
+                }
+        };
+
+        this.choose_candidate = function() {
+
+            var i = Math.flor(Math.random() * this.candidates.length);
+
+            return this.candidates[i];
+        };
+    }
 
     function Dumb_ai(board) {
 
@@ -34,7 +64,6 @@ var toe = (function(){
                 this.ways = result.num_moves;
             };
         }
-
         
 
         function count_moves_to_win(board, side, result) {
@@ -59,9 +88,6 @@ var toe = (function(){
 
                 return new Result(min_num_moves, ways);
             }
-
-
-            board.print();
 
             if (board.is_full()) {
                 result.num_moves = Infinity;
@@ -141,21 +167,25 @@ var toe = (function(){
         this.print = function() {
 
                 var count = 0;
+                var str = "";
+                var line = 0;
 
                 for (var position = 0400; position > 0; position >>= 1) {
 
                     if ((this.x & position) == position)
-                        process.stdout.write("x ");
+                        str += "x ";
                     else if ((this.o & position) == position)
-                        process.stdout.write("o ");
+                        str += "o ";
                     else
-                        process.stdout.write("- ");
+                        str += "- ";
 
-                    if (++count % 3 == 0)
-                        process.stdout.write('\n');
+                    if (++count % 3 == 0) {
+                        console.log(++line + " " + str);
+                        str = "";
+                    }
 
                 }
-                process.stdout.write('\n');
+                console.log();
             };
 
            this.play_position = function (position, side) {
