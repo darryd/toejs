@@ -4,7 +4,7 @@ var toe = (function(){
     function Candidate(compare_f) {
 
         this.candidates = [];
-        this.compare = compare_f
+        this.compare_f = compare_f
         this.add_candidate = function(candidate) {
 
             if (this.candidates.length == 0) {
@@ -12,7 +12,7 @@ var toe = (function(){
                 return;
             }
 
-            switch (this.compare(candidate, this.candidates[0])) {
+            switch (this.compare_f(candidate, this.candidates[0])) {
 
                 case "worse":
                     break;
@@ -27,7 +27,10 @@ var toe = (function(){
 
         this.choose_candidate = function() {
 
-            var i = Math.flor(Math.random() * this.candidates.length);
+            if (this.candidates.length == 0)
+                return null;
+            
+            var i = Math.floor(Math.random() * this.candidates.length);
 
             return this.candidates[i];
         };
@@ -63,6 +66,24 @@ var toe = (function(){
                 this.num_moves = result.num_moves;
                 this.ways = result.num_moves;
             };
+
+        }
+
+        this.compare_f = function(a, b) {
+
+            if (a.num_moves < b.num_moves)
+                return 'better';
+
+            if (a.num_moves > b.num_moves)
+                return 'worse';
+
+            if (a.ways > b.ways)
+                return 'better';
+
+            if (a.ways < b.ways)
+                return 'worse';
+
+            return 'equal';
         }
         
 
@@ -122,12 +143,22 @@ var toe = (function(){
 
         this.play = function(side) {
             var positions = this.board.get_vacant_positions();
-
-            var result = new Result(0, 0);
-            count_moves_to_win(this.board, side, result);
+            var candidate = new Candidate(this.compare_f);
             
-            console.log("num_moves: " + result.num_moves);
-            console.log("ways: " + result.ways);
+
+            for (var i = 0; i < positions.length; i++) {
+
+                var result = new Result(0, 0);
+                var new_board = this.board.copy();
+                
+                new_board.play_position(positions[i], side);
+
+                count_moves_to_win(new_board, side, result);
+                result.position = positions[i];
+
+                candidate.add_candidate(result);
+            }
+            return candidate.choose_candidate().position;
         }
     }
 
