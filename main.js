@@ -106,7 +106,6 @@ var toe = (function(){
             }
 
             var positions = board.get_vacant_positions();
-            var results = [];
 
             var candidate = new Candidate(function (a, b) {
 
@@ -127,7 +126,6 @@ var toe = (function(){
                 r.num_moves++;
 
                 r = count_moves_to_win(new_board, side, r);
-                results[i] = r.copy();
 
                 candidate.add_candidate(r);
             }
