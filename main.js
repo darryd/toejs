@@ -34,6 +34,12 @@ var toe = (function(){
 
             return this.candidates[i];
         };
+        
+        this.get_ways = function() {
+
+            return this.candidates.length;
+        };
+
     }
 
     function Dumb_ai(board) {
@@ -89,39 +95,28 @@ var toe = (function(){
 
         function count_moves_to_win(board, side, result) {
 
-            function get_best_result(results) {
-
-                var min_num_moves = Infinity;
-                var ways = 0;
-
-
-                for (var i = 0; i < results.length; i++) {
-
-                    if (results[i].num_moves < min_num_moves) {
-                        min_num_moves = results[i].num_moves;
-                        ways = 1;
-                    }
-                    else if (min_num_moves == results[i].num_moves){
-                        ways++;
-                    }
-
-                }
-
-                return new Result(min_num_moves, ways);
-            }
-
             if (board.is_full()) {
                 result.num_moves = Infinity;
-                return;
+                return result;
             }
                 
 
             if (board.check_win() == side) {
-                return;
+                return result;
             }
 
             var positions = board.get_vacant_positions();
             var results = [];
+
+            var candidate = new Candidate(function (a, b) {
+
+                if (a.num_moves < b.num_moves) 
+                    return 'better';
+                if (a.num_moves == b.num_moves)
+                    return 'equal';
+                if (a.num_moves > b.num_moves)
+                    return 'worse';
+            });
 
             for (var i = 0; i < positions.length; i++) {
                 var new_board = board.copy();
@@ -131,12 +126,16 @@ var toe = (function(){
                 var r = result.copy();
                 r.num_moves++;
 
-                count_moves_to_win(new_board, side, r);
+                r = count_moves_to_win(new_board, side, r);
                 results[i] = r.copy();
+
+                candidate.add_candidate(r);
             }
 
-            r = get_best_result(results);
-            result.set(r);
+            r = candidate.choose_candidate();
+            r.ways = candidate.get_ways();
+
+            return r;
         }
 
         this.board = board;
@@ -153,7 +152,7 @@ var toe = (function(){
                 
                 new_board.play_position(positions[i], side);
 
-                count_moves_to_win(new_board, side, result);
+                result = count_moves_to_win(new_board, side, result);
                 result.position = positions[i];
 
                 candidate.add_candidate(result);
@@ -167,7 +166,7 @@ var toe = (function(){
           var new_board = this.board.copy();
 
           new_board.play_position(move, side);
-          count_moves_to_win(new_board, side, result);
+          result = count_moves_to_win(new_board, side, result);
           
 
           new_board.print();
